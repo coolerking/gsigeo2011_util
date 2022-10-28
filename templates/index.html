@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="utf-8">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.2.0/chart.min.js"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.js" integrity="sha256-H+K7U5CnXl1h5ywQfKtSj8PCmoN9aaq30gDh27Xc0jk=" crossorigin="anonymous"></script>
+    <title>GSIGEO2011 viewer</title>
+</head>
+<body>
+    <!-- グラフ表示領域 -->
+    <canvas id="chart"></canvas>
+    <script type="text/javascript">
+        // データ量が多いので1回だけ描画
+        $.ajax({
+            url: '/scatter2d_data',
+            type: 'POST',
+            data: {}
+        }).done( (msg) => {
+            console.log('[done]');
+            // 散布図用データに変換
+            var lats = msg.data[0];
+            var lots = msg.data[1];
+            var scatter2d_data = [];
+            for (let step = 0; step < lats.length; step++) {
+                scatter2d_data.push({x: lats[step], y:lots[step]});
+            };
+            // 散布図の描画
+            var ctx = document.getElementById('chart');
+            var myChart = new Chart(ctx, {
+                type: 'scatter',
+                data: {
+                    datasets: [{
+                        label: 'Geoid Japan 2011 v2.1',
+                        data: scatter2d_data,
+                        backgroundColor: '#f88',
+                    }],
+                },
+                options: {
+                    scales: {
+                        y: { min: 20, max: 50 }, // 緯度（北緯）
+                        x: { min: 120, max: 150 }, // 経度(西経)
+                    },
+                },
+            });
+        }).fail(msg => {
+            console.log('[fail] ' + msg);
+        }).always((msg) => {});
+
+    </script>
+</body>
+</html>
