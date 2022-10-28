@@ -51,6 +51,8 @@ height = mgr.interpolate(26.633333, 127.966667)
 mgr.save('geoid2011_v2.1_xyz.csv')
 ```
 
+> 詳細な使い方は、[`geoid.py`](./geoid.py) のコメントを参照のこと。
+
 ## ライセンス
 
 [MITライセンス](./LICENSE) 準拠とする。
