@@ -7,6 +7,7 @@
 - ASCII版 日本のジオイド2011(Ver.2.1)を読み込む
 - 緯度・経度からジオイド高を算出する
 - 緯度・経度・ジオイド高 形式のCSVファイルを生成する
+- GeoJson形式でジオイドモデルを保存する
 
 ## 使い方
 
@@ -49,6 +50,9 @@ height = mgr.interpolate(26.633333, 127.966667)
 
 # 緯度・経度・ジオイド高 形式のCSVファイルを生成する
 mgr.save('geoid2011_v2.1_xyz.csv')
+
+# GeoJson形式でジオイドモデルを保存する
+mgr.save_geojson('geoid2011_v2.1_xyz.json')
 ```
 
 > 詳細な使い方は、[`geoid.py`](./geoid.py) のコメントを参照のこと。
