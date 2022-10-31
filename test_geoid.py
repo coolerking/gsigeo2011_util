@@ -50,10 +50,21 @@ def test_interpolate(path:str='gsigeo2011_ver2_1.asc', debug:str=True) -> None:
     print('9:test-9   (263500.0000, 1280000.0000) -> 32.5583')
     assert 32.5583 == pytest.approx(mgr.interpolate(26.583333, 128.00000000), ep)
 
+def test_gpd_save(path:str='gsigeo2011_ver2_1.asc', gpd_graph_path='gsigeo2011_ver2_1_geo.png', debug:str=True) -> None:
+    """
+    GeoDataFrame生成テスト。
+    """
     # Geoデータテスト
     import geopandas as gpd
     import matplotlib.pyplot as plt
+
+    # ターゲットインスタンス
+    mgr = HeightManager(path, debug)
+
+    # ターゲットメソッド
     geo = mgr.get_gpd()
+
+    # 日本地図上にジオイドモデルのポイントを描画
     world = gpd.read_file(gpd.datasets.get_path('naturalearth_lowres'))
     japan = world[world['name']=='Japan']
     ax = japan.plot()
@@ -61,6 +72,9 @@ def test_interpolate(path:str='gsigeo2011_ver2_1.asc', debug:str=True) -> None:
     plt.savefig(path + '.png')
 
 def test_clsmethod():
+    """
+    度分秒<->度 変換テスト。
+    """
     # float値誤差
     ep = 0.001
 
@@ -80,7 +94,7 @@ def test_clsmethod():
 
 def test_scatter2d(path:str='gsigeo2011_ver2_1.asc', scatter_path='gsigeo2011_ver2_1_2d.png', debug:bool=True):
     """
-    2次元散布図の保存
+    2次元散布図の保存テスト。
     """
     # ターゲットインスタンス
     mgr = HeightManager(path, debug)
@@ -89,7 +103,7 @@ def test_scatter2d(path:str='gsigeo2011_ver2_1.asc', scatter_path='gsigeo2011_ve
 
 def test_scatter3d(path:str='gsigeo2011_ver2_1.asc', scatter_path='gsigeo2011_ver2_1_3d.png', debug:bool=True):
     """
-    3次元散布図の保存
+    3次元散布図の保存テスト。
     """
     # ターゲットインスタンス
     mgr = HeightManager(path, debug)
@@ -110,3 +124,5 @@ if __name__ == '__main__':
     test_interpolate(path=args.path, debug=args.debug)
     test_scatter2d(path=args.path, scatter_path=args.path+'_2d.png', debug=args.debug)
     test_scatter3d(path=args.path, scatter_path=args.path+'_3d.png', debug=args.debug)
+    test_clsmethod()
+    test_gpd_save(path=args.path, gpd_graph_path='gsigeo2011_ver2_1_geo.png', debug=args.debug)
