@@ -23,6 +23,8 @@
 
 `gioid.py` の単体テストを実行する場合は、以下のコマンドを実行する。
 
+> カレントディレクトリにファイル `gsigeo2011_ver2_1.asc` が存在しない場合は、エラーとなる。
+
 ```bash
 pip install pytest
 pytest
