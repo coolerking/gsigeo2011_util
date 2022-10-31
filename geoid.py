@@ -12,6 +12,8 @@ ASCII形式のファイルをダウンロード・展開し、
 import re
 import csv
 import numpy as np
+import geopandas as gpd
+from shapely.geometry import Point
 from typing import Tuple
 
 class HeightManager:
@@ -156,6 +158,32 @@ class HeightManager:
         if self.debug:
             print(f'saved to {path}')
 
+    def save_geojson(self, path:str='geoid.json', crs:str='EPSG:4326'):
+        """
+        ジオイドモデルをGeoJson形式で保存する。
+
+        Parameters
+        ----
+        path:str
+            GeoJson形式ファイルパス
+        crs:str
+            座標系（デフォルト: 'EPSG:4326'）
+        """
+        self.get_gpd(crs=crs).to_file(driver='GeoJSON', filename=path)
+
+    def save_geoshp(self, path:str='geoid.shp', crs:str='EPSG:4326'):
+        """
+        ジオイドモデルをShp形式で保存する。
+
+        Parameters
+        ----
+        path:str
+            GeoJson形式ファイルパス
+        crs:str
+            座標系（デフォルト: 'EPSG:4326'）
+        """
+        self.get_gpd(crs=crs).to_file(driver='ESRI Shapefile', filename=path)
+
     def get_scatter2d(self, path:str=None) -> None:
         """
         日本のジオイドデータを2次元散布図に変換する。
@@ -174,14 +202,14 @@ class HeightManager:
         fig = plt.figure(figsize=(8, 6))
 
         # subplot の追加
-        ax = fig.add_subplot(projection='3d')
+        ax = fig.add_subplot()
 
         # タイトルの作成
         ax.set_title('Geoid Japan2011 Ver2.1', size=10)
  
         # 軸ラベルのサイズと色を設定
         ax.set_xlabel('latitude(north)',size=10,color='black')
-        ax.set_ylabel('longitude(east)',size=10,color='black')
+        ax.set_ylabel('longitude(west)',size=10,color='black')
 
         # リストx:緯度、リストy:経度、リストz:ジオイド高 に変換
         (x, y, _) = self.convert_xyz()
@@ -225,7 +253,7 @@ class HeightManager:
  
         # 軸ラベルのサイズと色を設定
         ax.set_xlabel('latitude(north)',size=10,color='black')
-        ax.set_ylabel('longitude(east)',size=10,color='black')
+        ax.set_ylabel('longitude(west)',size=10,color='black')
         ax.set_zlabel('geoid height(m)', size=10, color='black')
 
         # リストx:緯度、リストy:経度、リストz:ジオイド高 に変換
@@ -466,6 +494,27 @@ class HeightManager:
         z = np.array(z, dtype=float)
 
         return (x, y, z)
+
+    def get_gpd(self, crs:str='EPSG:4326') -> gpd.GeoDataFrame:
+        """
+        ジオイドモデルをGeoDataFrame オブジェクトとして取得する。
+
+        Parameters
+        ----
+        crs:str
+            座標系（デフォルト EPSG:4326）
+        
+        Returns
+        ----
+        gpd.GeoDataFrame
+            ジオイドモデル(ジオイド高:'height'属性)
+        """
+        (x, y, z) = self.convert_xyz()
+        geometry = []
+        total = len(x)
+        for i in range(total):
+            geometry.append(Point(x[i], y[i]))
+        return gpd.GeoDataFrame({'height':z, 'geometry':geometry}, crs=crs)
 
     @classmethod
     def to_dms(cls, degree:float) -> Tuple[int, int, float]:

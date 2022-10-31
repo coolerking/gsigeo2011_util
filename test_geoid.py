@@ -50,6 +50,16 @@ def test_interpolate(path:str='gsigeo2011_ver2_1.asc', debug:str=True) -> None:
     print('9:test-9   (263500.0000, 1280000.0000) -> 32.5583')
     assert 32.5583 == pytest.approx(mgr.interpolate(26.583333, 128.00000000), ep)
 
+    # Geoデータテスト
+    import geopandas as gpd
+    import matplotlib.pyplot as plt
+    geo = mgr.get_gpd()
+    world = gpd.read_file(gpd.datasets.get_path('naturalearth_lowres'))
+    japan = world[world['name']=='Japan']
+    ax = japan.plot()
+    geo.plot(ax=ax, color='red', markersize=2)
+    plt.savefig(path + '.png')
+
 def test_clsmethod():
     # float値誤差
     ep = 0.001
@@ -67,7 +77,6 @@ def test_clsmethod():
     assert 34 == m
     #assert 0.0 == pytest.approx(s, ep)
     assert 59.999 == pytest.approx(s, ep)
-
 
 def test_scatter2d(path:str='gsigeo2011_ver2_1.asc', scatter_path='gsigeo2011_ver2_1_2d.png', debug:bool=True):
     """
