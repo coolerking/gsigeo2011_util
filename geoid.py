@@ -209,7 +209,7 @@ class HeightManager:
  
         # 軸ラベルのサイズと色を設定
         ax.set_xlabel('latitude(north)',size=10,color='black')
-        ax.set_ylabel('longitude(west)',size=10,color='black')
+        ax.set_ylabel('longitude(east)',size=10,color='black')
 
         # リストx:緯度、リストy:経度、リストz:ジオイド高 に変換
         (x, y, _) = self.convert_xyz()
@@ -237,8 +237,6 @@ class HeightManager:
             3次元散布図保存先ファイルパス、指定なしの場合表示させる
         """
         import matplotlib.pyplot as plt
-        from mpl_toolkits.mplot3d import Axes3D
-        from scipy.interpolate import griddata
         # フォントファミリ指定
         plt.rcParams['font.family'] = 'Meiryo'
 
@@ -253,7 +251,7 @@ class HeightManager:
  
         # 軸ラベルのサイズと色を設定
         ax.set_xlabel('latitude(north)',size=10,color='black')
-        ax.set_ylabel('longitude(west)',size=10,color='black')
+        ax.set_ylabel('longitude(east)',size=10,color='black')
         ax.set_zlabel('geoid height(m)', size=10, color='black')
 
         # リストx:緯度、リストy:経度、リストz:ジオイド高 に変換
