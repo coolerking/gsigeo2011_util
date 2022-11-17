@@ -427,7 +427,8 @@ class Mesh:
         geometry = []
         total = len(_x)
         for i in range(total):
-            geometry.append(Point(_x[i], _y[i]))
+            # Point(経度, 緯度)
+            geometry.append(Point(_y[i], _x[i]))
         return gpd.GeoDataFrame({'height':_z, 'type':_t, 'geometry':geometry}, crs=crs)
 
 if __name__ == '__main__':
